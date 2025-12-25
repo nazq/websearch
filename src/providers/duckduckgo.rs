@@ -191,6 +191,10 @@ impl DuckDuckGoProvider {
                     published_date: None,
                     provider: Some("duckduckgo".to_string()),
                     raw: None,
+                    // DuckDuckGo doesn't provide full content extraction
+                    content: None,
+                    content_format: None,
+                    word_count: None,
                 });
             }
         }

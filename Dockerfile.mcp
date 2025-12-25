@@ -1,0 +1,49 @@
+# WebSearch MCP Server Dockerfile
+#
+# Build:
+#   docker build -f Dockerfile.mcp -t websearch-mcp .
+#
+# Run:
+#   docker run -p 3000:3000 -e WEBSEARCHAPI_KEY=your-key websearch-mcp
+
+FROM rust:1.88-slim-bookworm AS builder
+
+WORKDIR /app
+
+# Install build dependencies
+RUN apt-get update && apt-get install -y \
+    pkg-config \
+    libssl-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy manifests
+COPY Cargo.toml Cargo.lock* ./
+
+# Copy source
+COPY src ./src
+COPY tests ./tests
+
+# Build release binary with MCP feature
+RUN cargo build --release --features mcp --bin websearch-mcp
+
+# Runtime image
+FROM debian:bookworm-slim
+
+RUN apt-get update && apt-get install -y \
+    ca-certificates \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY --from=builder /app/target/release/websearch-mcp /usr/local/bin/websearch-mcp
+
+EXPOSE 3000
+
+HEALTHCHECK --interval=10s --timeout=5s --retries=5 \
+    CMD curl -sf http://localhost:3000/health || exit 1
+
+# Default to HTTP transport for container deployments
+ENV WEBSEARCH_TRANSPORT=http
+ENV WEBSEARCH_BIND_ADDR=0.0.0.0:3000
+ENV WEBSEARCH_DEFAULT_PROVIDER=duckduckgo
+
+ENTRYPOINT ["/usr/local/bin/websearch-mcp"]

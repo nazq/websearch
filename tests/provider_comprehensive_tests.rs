@@ -177,6 +177,7 @@ async fn test_provider_configuration_methods() {
 }
 
 #[tokio::test]
+#[ignore = "DuckDuckGo may rate-limit automated requests"]
 async fn test_duckduckgo_real_search() {
     // DuckDuckGo should always work without API keys
     let duckduckgo = DuckDuckGoProvider::new();

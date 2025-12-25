@@ -49,6 +49,7 @@ A high-performance Rust library and command-line tool for searching across multi
 | **Exa** | ✅ Complete | Yes | Semantic search with embeddings |
 | **SearXNG** | ✅ Complete | No | Self-hosted privacy-focused search |
 | **ArXiv** | ✅ Complete | No | Academic papers and research |
+| **WebSearchAPI.ai** | ✅ Complete | Yes | LLM-ready content extraction with markdown |
 
 ## 🚀 Installation
 
@@ -337,6 +338,31 @@ pub struct SearchResult {
     pub published_date: Option<String>, // Publication date
     pub provider: Option<String>,       // Provider name
     pub raw: Option<serde_json::Value>, // Raw provider data
+    // LLM-ready content fields (for providers that support content extraction)
+    pub content: Option<String>,        // Full extracted page content
+    pub content_format: Option<String>, // Format: "markdown", "text", "html"
+    pub word_count: Option<u32>,        // Word count of content
+}
+```
+
+### LLM-Ready Content Providers
+
+Some providers support full content extraction, returning markdown-formatted content ready for AI/LLM consumption:
+
+- **WebSearchAPI.ai**: Full content extraction with markdown formatting
+- **Exa**: Content extraction when `with_contents(true)` is enabled
+
+```rust
+// Using WebSearchAPI.ai for LLM-ready content
+let provider = WebSearchApiProvider::new("YOUR_API_KEY")?
+    .with_content(true)
+    .with_content_format("markdown")?;
+
+let results = web_search(options).await?;
+for result in results {
+    if let Some(content) = result.content {
+        println!("Content ({} words): {}", result.word_count.unwrap_or(0), content);
+    }
 }
 ```
 
@@ -598,6 +624,52 @@ cargo run --example serpapi_test       # SerpAPI
 cargo run --example basic_search       # DuckDuckGo (no key needed)
 ```
 
+## MCP Server (Model Context Protocol)
+
+WebSearch includes an optional MCP server that exposes web search capabilities as tools for AI assistants like Claude Desktop.
+
+### Building the MCP Server
+
+```bash
+# Build with MCP feature
+cargo build --release --features mcp --bin websearch-mcp
+```
+
+### Claude Desktop Configuration
+
+Add to your Claude Desktop config (`~/.config/claude/claude_desktop_config.json` on Linux or `~/Library/Application Support/Claude/claude_desktop_config.json` on macOS):
+
+```json
+{
+  "mcpServers": {
+    "websearch": {
+      "command": "/path/to/websearch-mcp",
+      "env": {
+        "WEBSEARCH_DEFAULT_PROVIDER": "duckduckgo",
+        "TAVILY_API_KEY": "your-key-here",
+        "WEBSEARCHAPI_KEY": "your-key-here"
+      }
+    }
+  }
+}
+```
+
+### Available MCP Tools
+
+- **`web_search`**: Search the web with configurable provider, max results, and content extraction
+- **`list_providers`**: List all available search providers and their configuration status
+
+### MCP Tool Parameters
+
+```json
+{
+  "query": "rust programming",
+  "max_results": 5,
+  "include_content": true,
+  "provider": "websearchapi_ai"
+}
+```
+
 ## Development
 
 ```bash
@@ -606,6 +678,9 @@ cargo check
 
 # Run tests
 cargo test
+
+# Build with MCP support
+cargo build --features mcp
 
 # Run example with DuckDuckGo (no API key needed)
 cargo run --example basic_search
@@ -668,10 +743,12 @@ cargo test --test tavily_integration_tests
 
 - ✅ Core architecture and Google provider
 - ✅ DuckDuckGo text search
-- ✅ All 8 search providers implemented
-- ✅ Comprehensive test coverage (57 tests)
+- ✅ All 9 search providers implemented (including WebSearchAPI.ai)
+- ✅ Comprehensive test coverage (42+ unit tests)
 - ✅ Multi-provider strategies
 - ✅ Error handling and timeout support
+- ✅ LLM-ready content extraction (content, content_format, word_count fields)
+- ✅ MCP Server for AI assistant integration
 - 🔄 Performance benchmarks
 - 🔄 Advanced pagination support
 - 🔄 Caching layer

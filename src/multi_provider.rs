@@ -399,6 +399,9 @@ mod tests {
                         published_date: None,
                         provider: Some(name.to_string()),
                         raw: None,
+                        content: None,
+                        content_format: None,
+                        word_count: None,
                     },
                     SearchResult {
                         title: format!("{name} Result 2"),
@@ -408,6 +411,9 @@ mod tests {
                         published_date: None,
                         provider: Some(name.to_string()),
                         raw: None,
+                        content: None,
+                        content_format: None,
+                        word_count: None,
                     },
                 ],
                 delay_ms: 0,
@@ -591,6 +597,9 @@ mod tests {
             published_date: None,
             provider: Some("provider1".to_string()),
             raw: None,
+            content: None,
+            content_format: None,
+            word_count: None,
         }]);
         let provider2 = MockProvider::new("provider2").with_results(vec![SearchResult {
             title: "Provider2 Result".to_string(),
@@ -600,6 +609,9 @@ mod tests {
             published_date: None,
             provider: Some("provider2".to_string()),
             raw: None,
+            content: None,
+            content_format: None,
+            word_count: None,
         }]);
 
         let config = MultiProviderConfig::new(MultiProviderStrategy::Aggregate)
@@ -778,6 +790,9 @@ mod tests {
                 published_date: None,
                 provider: Some("provider1".to_string()),
                 raw: None,
+                content: None,
+                content_format: None,
+                word_count: None,
             },
             SearchResult {
                 title: "Result 2".to_string(),
@@ -787,6 +802,9 @@ mod tests {
                 published_date: None,
                 provider: Some("provider1".to_string()),
                 raw: None,
+                content: None,
+                content_format: None,
+                word_count: None,
             },
         ]);
         let provider2 = MockProvider::new("provider2").with_results(vec![
@@ -798,6 +816,9 @@ mod tests {
                 published_date: None,
                 provider: Some("provider2".to_string()),
                 raw: None,
+                content: None,
+                content_format: None,
+                word_count: None,
             },
             SearchResult {
                 title: "Result 4".to_string(),
@@ -807,6 +828,9 @@ mod tests {
                 published_date: None,
                 provider: Some("provider2".to_string()),
                 raw: None,
+                content: None,
+                content_format: None,
+                word_count: None,
             },
         ]);
 

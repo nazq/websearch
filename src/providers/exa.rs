@@ -26,8 +26,8 @@ struct ExaSearchResult {
 struct ExaSearchResponse {
     #[serde(rename = "requestId")]
     request_id: String,
-    #[serde(rename = "autopromptString")]
-    autoPrompt_string: String,
+    #[serde(default, rename = "autopromptString")]
+    autoprompt_string: Option<String>,
     results: Vec<ExaSearchResult>,
     #[serde(rename = "searchTime")]
     search_time: Option<f64>,
@@ -169,9 +169,9 @@ impl SearchProvider for ExaProvider {
         if let Some(debug) = &options.debug {
             if debug.enabled && debug.log_responses {
                 log::info!(
-                    "Exa API response: {} results for query: {}",
+                    "Exa API response: {} results for query: {:?}",
                     exa_response.results.len(),
-                    exa_response.autoPrompt_string
+                    exa_response.autoprompt_string
                 );
             }
         }
@@ -206,10 +206,19 @@ impl SearchProvider for ExaProvider {
                     );
                 }
 
+                // If include_contents is enabled, text contains the full content
+                let (content, content_format, word_count) = if self.include_contents {
+                    let text = result.text.clone();
+                    let wc = text.as_ref().map(|t| t.split_whitespace().count() as u32);
+                    (text, Some("text".to_string()), wc)
+                } else {
+                    (None, None, None)
+                };
+
                 SearchResultType {
                     url: result.url,
                     title: result.title,
-                    snippet: result.text, // This might be None if content isn't included
+                    snippet: if self.include_contents { None } else { result.text },
                     domain,
                     published_date: result.published_date,
                     provider: Some("exa".to_string()),
@@ -218,6 +227,9 @@ impl SearchProvider for ExaProvider {
                     } else {
                         Some(serde_json::to_value(raw_data).unwrap_or_default())
                     },
+                    content,
+                    content_format,
+                    word_count,
                 }
             })
             .collect();

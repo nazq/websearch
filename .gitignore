@@ -3,6 +3,9 @@
 .env.local
 .env.production
 
+# Cargo config with API keys (use .cargo/config.toml.example as template)
+.cargo/config.toml
+
 # Rust compilation artifacts
 /target/
 Cargo.lock

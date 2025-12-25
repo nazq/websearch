@@ -8,7 +8,7 @@
 //!
 //! ## Quick Start
 //!
-//! ```rust
+//! ```rust,no_run
 //! use websearch::{web_search, providers::google::GoogleProvider, SearchOptions};
 //!
 //! #[tokio::main]
@@ -33,6 +33,8 @@
 //! ```
 
 pub mod error;
+#[cfg(feature = "mcp")]
+pub mod mcp;
 pub mod multi_provider;
 pub mod providers;
 pub mod types;
@@ -54,7 +56,7 @@ pub use types::{DebugOptions, SearchOptions, SearchProvider, SearchResult};
 ///
 /// # Examples
 ///
-/// ```rust
+/// ```rust,no_run
 /// use websearch::{web_search, providers::google::GoogleProvider, SearchOptions};
 ///
 /// # #[tokio::main]
@@ -217,6 +219,9 @@ mod tests {
                         published_date: None,
                         provider: Some(name.to_string()),
                         raw: None,
+                        content: None,
+                        content_format: None,
+                        word_count: None,
                     },
                     SearchResult {
                         title: "Test Result 2".to_string(),
@@ -226,6 +231,9 @@ mod tests {
                         published_date: None,
                         provider: Some(name.to_string()),
                         raw: None,
+                        content: None,
+                        content_format: None,
+                        word_count: None,
                     },
                 ],
             }
@@ -420,6 +428,9 @@ mod tests {
                 published_date: None,
                 provider: Some("test".to_string()),
                 raw: None,
+                content: None,
+                content_format: None,
+                word_count: None,
             },
             SearchResult {
                 title: "Result 2".to_string(),
@@ -429,6 +440,9 @@ mod tests {
                 published_date: None,
                 provider: Some("test".to_string()),
                 raw: None,
+                content: None,
+                content_format: None,
+                word_count: None,
             },
             SearchResult {
                 title: "Result 3".to_string(),
@@ -438,6 +452,9 @@ mod tests {
                 published_date: None,
                 provider: Some("test".to_string()),
                 raw: None,
+                content: None,
+                content_format: None,
+                word_count: None,
             },
         ];
 

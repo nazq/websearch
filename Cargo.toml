@@ -13,6 +13,10 @@ readme = "README.md"
 [package.metadata]
 original_typescript_version = "https://github.com/PlustOrg/search-sdk"
 
+[features]
+default = []
+mcp = ["rmcp", "schemars", "tokio-util", "axum"]
+
 [lib]
 name = "websearch"
 path = "src/lib.rs"
@@ -20,6 +24,11 @@ path = "src/lib.rs"
 [[bin]]
 name = "websearch"
 path = "src/bin/main.rs"
+
+[[bin]]
+name = "websearch-mcp"
+path = "src/bin/websearch_mcp.rs"
+required-features = ["mcp"]
 
 [dependencies]
 # HTTP client
@@ -50,6 +59,12 @@ futures = "0.3"
 clap = { version = "4.4", features = ["derive", "env"] }
 # Enhanced terminal output
 colored = "2.0"
+# MCP server (optional)
+rmcp = { version = "0.12", features = ["server", "transport-io", "transport-streamable-http-server", "macros"], optional = true }
+schemars = { version = "1.1", optional = true }
+tokio-util = { version = "0.7", optional = true }
+# HTTP server for MCP HTTP transport (optional)
+axum = { version = "0.8", optional = true }
 
 [dev-dependencies]
 tokio-test = "0.4"
@@ -58,3 +73,4 @@ env_logger = "0.10"
 tempfile = "3.8"
 wiremock = "0.5"
 serial_test = "3.0"
+rstest = "0.23"

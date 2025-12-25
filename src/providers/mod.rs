@@ -8,6 +8,7 @@ pub mod google;
 pub mod searxng;
 pub mod serpapi;
 pub mod tavily;
+pub mod websearchapi_ai;
 
 // Re-export providers for convenience
 pub use arxiv::ArxivProvider;
@@ -18,3 +19,4 @@ pub use google::GoogleProvider;
 pub use searxng::SearxNGProvider;
 pub use serpapi::SerpApiProvider;
 pub use tavily::TavilyProvider;
+pub use websearchapi_ai::WebSearchApiProvider;

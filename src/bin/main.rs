@@ -115,6 +115,8 @@ enum Provider {
     Brave,
     Searxng,
     Arxiv,
+    #[value(name = "websearchapi_ai")]
+    WebSearchApiAi,
 }
 
 #[derive(ValueEnum, Clone, Debug)]
@@ -343,6 +345,7 @@ async fn handle_list_providers() -> Result<(), Box<dyn std::error::Error>> {
         ("Brave", "Requires BRAVE_API_KEY"),
         ("SearXNG", "Requires SEARXNG_URL"),
         ("ArXiv", "No API key required"),
+        ("WebSearchAPI.ai", "Requires WEBSEARCHAPI_KEY (LLM-ready content)"),
     ];
 
     for (name, requirement) in providers {
@@ -360,6 +363,7 @@ async fn handle_list_providers() -> Result<(), Box<dyn std::error::Error>> {
     println!("export SERPAPI_API_KEY=your_key");
     println!("export BRAVE_API_KEY=your_key");
     println!("export SEARXNG_URL=https://your-searxng-instance.com");
+    println!("export WEBSEARCHAPI_KEY=your_key");
 
     Ok(())
 }
@@ -393,6 +397,10 @@ async fn create_provider(provider: Provider) -> Result<Box<dyn websearch::types:
             Ok(Box::new(SearxNGProvider::new(&url)?))
         }
         Provider::Arxiv => Ok(Box::new(ArxivProvider::new())),
+        Provider::WebSearchApiAi => {
+            let api_key = env::var("WEBSEARCHAPI_KEY")?;
+            Ok(Box::new(WebSearchApiProvider::new(&api_key)?))
+        }
     }
 }
 
@@ -419,6 +427,9 @@ async fn get_available_providers() -> Vec<Provider> {
         available.push(Provider::Searxng);
     }
     available.push(Provider::Arxiv); // Always available
+    if env::var("WEBSEARCHAPI_KEY").is_ok() {
+        available.push(Provider::WebSearchApiAi);
+    }
 
     available
 }
@@ -433,6 +444,7 @@ async fn check_provider_availability(provider_name: &str) -> bool {
         "Brave" => env::var("BRAVE_API_KEY").is_ok(),
         "SearXNG" => env::var("SEARXNG_URL").is_ok(),
         "ArXiv" => true,
+        "WebSearchAPI.ai" => env::var("WEBSEARCHAPI_KEY").is_ok(),
         _ => false,
     }
 }

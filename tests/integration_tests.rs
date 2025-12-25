@@ -130,6 +130,9 @@ fn create_test_results(provider: &str, count: usize) -> Vec<SearchResult> {
             published_date: None,
             provider: Some(provider.to_string()),
             raw: None,
+            content: None,
+            content_format: None,
+            word_count: None,
         })
         .collect()
 }
@@ -356,6 +359,9 @@ async fn test_edge_case_malformed_urls_in_results() {
             published_date: None,
             provider: Some("test".to_string()),
             raw: None,
+            content: None,
+            content_format: None,
+            word_count: None,
         },
         SearchResult {
             title: "Invalid URL Result".to_string(),
@@ -365,6 +371,9 @@ async fn test_edge_case_malformed_urls_in_results() {
             published_date: None,
             provider: Some("test".to_string()),
             raw: None,
+            content: None,
+            content_format: None,
+            word_count: None,
         },
         SearchResult {
             title: "Empty URL Result".to_string(),
@@ -374,6 +383,9 @@ async fn test_edge_case_malformed_urls_in_results() {
             published_date: None,
             provider: Some("test".to_string()),
             raw: None,
+            content: None,
+            content_format: None,
+            word_count: None,
         },
     ];
 
@@ -423,6 +435,9 @@ async fn test_memory_usage_with_large_content() {
         published_date: None,
         provider: Some("large".to_string()),
         raw: None,
+        content: None,
+        content_format: None,
+        word_count: None,
     }];
 
     let provider = TestProvider::success("large", large_content_results);

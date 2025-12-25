@@ -1,0 +1,12 @@
+[env]
+# Uncomment and set API keys for integration tests
+# These are read by tests/provider_integration.rs
+# Tests gracefully skip when keys are not set
+
+#TAVILY_API_KEY = "tvly-xxx"
+#WEBSEARCHAPI_KEY = "xxx"
+#EXA_API_KEY = "xxx"
+#GOOGLE_API_KEY = "xxx"
+#GOOGLE_CX = "xxx"
+#SERPAPI_API_KEY = "xxx"
+#BRAVE_API_KEY = "xxx"

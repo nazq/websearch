@@ -223,6 +223,10 @@ impl SearchProvider for GoogleProvider {
                         published_date,
                         provider: Some("google".to_string()),
                         raw: serde_json::to_value(&item).ok(),
+                        // Google doesn't provide full content extraction
+                        content: None,
+                        content_format: None,
+                        word_count: None,
                     }
                 })
                 .collect()

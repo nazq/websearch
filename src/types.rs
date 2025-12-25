@@ -23,6 +23,22 @@ pub struct SearchResult {
     /// Raw response data from the provider
     #[serde(skip_serializing_if = "Option::is_none")]
     pub raw: Option<serde_json::Value>,
+    /// Full extracted page content (for LLM-ready providers)
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub content: Option<String>,
+    /// Format of the content field ("markdown", "text", "html")
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub content_format: Option<String>,
+    /// Word count of the content field
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub word_count: Option<u32>,
+}
+
+impl SearchResult {
+    /// Check if this result has extracted content
+    pub fn has_content(&self) -> bool {
+        self.content.is_some()
+    }
 }
 
 /// Debug options for the search SDK

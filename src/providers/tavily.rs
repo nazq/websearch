@@ -16,6 +16,8 @@ struct TavilySearchResult {
     title: String,
     url: String,
     content: String,
+    #[serde(default)]
+    raw_content: Option<String>,
     score: Option<f64>,
     published_date: Option<String>,
 }
@@ -207,6 +209,15 @@ impl SearchProvider for TavilyProvider {
                 // Store the original result as raw data
                 let raw_value = serde_json::to_value(&result).unwrap_or_default();
 
+                // Calculate word count if raw_content is present
+                let word_count = result
+                    .raw_content
+                    .as_ref()
+                    .map(|c| c.split_whitespace().count() as u32);
+
+                // Content format is text when raw_content is present
+                let content_format = result.raw_content.as_ref().map(|_| "text".to_string());
+
                 SearchResultType {
                     url: result.url,
                     title: result.title,
@@ -215,6 +226,10 @@ impl SearchProvider for TavilyProvider {
                     published_date: result.published_date,
                     provider: Some("tavily".to_string()),
                     raw: Some(raw_value),
+                    // Populate content when raw_content is available (advanced search mode)
+                    content: result.raw_content,
+                    content_format,
+                    word_count,
                 }
             })
             .collect();

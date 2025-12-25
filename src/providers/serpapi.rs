@@ -185,6 +185,10 @@ impl SearchProvider for SerpApiProvider {
                     published_date: result.date,
                     provider: Some("serpapi".to_string()),
                     raw: Some(raw_value),
+                    // SerpAPI doesn't provide full content extraction
+                    content: None,
+                    content_format: None,
+                    word_count: None,
                 }
             })
             .collect();

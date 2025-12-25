@@ -205,6 +205,10 @@ impl SearchProvider for ArxivProvider {
                     published_date: Some(entry.published),
                     provider: Some("arxiv".to_string()),
                     raw: Some(serde_json::to_value(raw_data).unwrap_or_default()),
+                    // ArXiv doesn't provide full content extraction
+                    content: None,
+                    content_format: None,
+                    word_count: None,
                 }
             })
             .collect();
